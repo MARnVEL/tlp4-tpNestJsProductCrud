@@ -44,7 +44,12 @@ export class AppController {
 
   @Delete('product/:id')
   deleteProduct(@Param('id') id: number): any {
-    return this.products.filter((product) => product.id !== +id);
+    const deletedProduct = this.products.filter(product => product.id === +id)
+    // console.log(...deletedProduct)
+    
+    const newArray = this.products.filter((product) => product.id !== +id);
+    this.products = newArray
+    return deletedProduct[0]
   }
 
   @Put('product/:id')
