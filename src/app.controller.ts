@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -8,7 +9,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-
 @Controller()
 export class AppController {
   private products = [
@@ -44,12 +44,14 @@ export class AppController {
 
   @Delete('product/:id')
   deleteProduct(@Param('id') id: number): any {
-    const deletedProduct = this.products.filter(product => product.id === +id)
+    const deletedProduct = this.products.filter(
+      (product) => product.id === +id,
+    );
     // console.log(...deletedProduct)
-    
+
     const newArray = this.products.filter((product) => product.id !== +id);
-    this.products = newArray
-    return deletedProduct[0]
+    this.products = newArray;
+    return deletedProduct[0];
   }
 
   @Put('product/:id')
