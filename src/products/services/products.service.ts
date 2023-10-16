@@ -21,7 +21,12 @@ export class ProductsService {
   }
 
   getProduct(id: number) {
-    return this.products.find((product) => product.id === id);
+    const porduct = this.products.find((product) => product.id === id);
+    if (porduct) {
+      return porduct;
+    } else {
+      console.log('No existe el producto');
+    }
   }
 
   createProduct(datos: Product): any {
