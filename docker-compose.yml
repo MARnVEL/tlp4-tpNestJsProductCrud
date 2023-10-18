@@ -2,14 +2,14 @@ version: '3.1'
 
 services:
   marnvel_pg:
-    image: postgres:15.1
+    image: postgres:15.4
     container_name: marnvel_pg
     restart: always
     environment:
-      - POSTGRES_DB: marnveldb
-      - POSTGRES_USER: marnvel
-      - POSTGRES_PASSWORD: pass
+      POSTGRES_DB: marnveldb
+      POSTGRES_USER: marnvel
+      POSTGRES_PASSWORD: pass
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - 5432:5432
+      - 5433:5432
