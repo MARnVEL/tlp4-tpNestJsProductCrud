@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { ProductsModule } from './products/products.module';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV.trim()}.env`,
-      isGlobal: true
-    }),
+    // ConfigModule.forRoot({
+    //   envFilePath: `.${process.env.NODE_ENV.trim()}.env`,
+    //   isGlobal: true
+    // }),
+    MongooseModule.forRoot('mongodb://127.0.0.1/nest'),
     ProductsModule
-  ]
-  // controllers: [AppController],
-  // providers: [AppService]
+  ] 
 })
 export class AppModule {}

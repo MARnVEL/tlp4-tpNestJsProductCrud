@@ -29,26 +29,26 @@ export class ProductsController {
   }
 
   @Get('/:id')
-  getProduct(@Param('id', ParseIntPipe) id: number): any {
-    const parsedId = Number(id);
-    return this.productsService.getProduct(parsedId);
+  getProduct(@Param('id') id: string): any {
+    // const parsedId = Number(id);
+    return this.productsService.getProduct(id);
   }
 
   @Post()
   createProduct(@Body() datos): any {
     return this.productsService.createProduct(datos);
   }
-
+/* 
   @Put('/:id')
-  updateProduct(@Param('id', ParseIntPipe) id: number, @Body() data): any {
+  updateProduct(@Param('id') id: string, @Body() data): any {
     return this.productsService.updateProduct(id, data);
   }
 
   @Delete('/:id')
-  deleteProduct(@Param('id', ParseIntPipe) id: number): any {
+  deleteProduct(@Param('id') id: string): any {
     return this.productsService.deleteProduct(id);
   }
-
+ */
   // @Post()
   // sendData(@Body() datos): any {
   //   return datos;

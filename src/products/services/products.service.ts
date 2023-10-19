@@ -1,12 +1,25 @@
+import { v4 as uuid } from 'uuid'
+import { Model } from 'mongoose';
+
 import { Injectable } from '@nestjs/common';
-import { Product } from '../models/product.model';
+import { InjectModel } from '@nestjs/mongoose';
+
+import { ProductDTO } from '../dto/product.dto';
+import { Product } from './../schemas/products.schema';
+
+// import { Product } from '../models/product.model';
 
 @Injectable()
 export class ProductsService {
+
+  constructor(@InjectModel(Product.name) private productModel: Model<Product>) {}
+
+  /*
   private products: Product[] = [
-    { id: 1, name: 'P1', price: 12, stock: 5 },
-    { id: 2, name: 'P1', price: 12, stock: 5 }
+    { id: uuid(), name: 'P1', price: 12, stock: 5 },
+    { id: uuid(), name: 'P1', price: 12, stock: 5 }
   ];
+  */
 
   getHello(): string {
     return 'Hello World!';
@@ -16,38 +29,40 @@ export class ProductsService {
     return 'Hola';
   }
 
-  getProducts(): any {
-    return this.products;
+  getProducts(): Promise<Product[]> {
+    return this.productModel.find().exec()
   }
 
-  getProduct(id: number) {
-    const porduct = this.products.find((product) => product.id === id);
-    if (porduct) {
-      return porduct;
-    } else {
-      console.log('No existe el producto');
-    }
+  async getProduct(id: string): Promise<Product> {
+    // const porduct = this.products.find((product) => product.id === id);
+    // if (porduct) {
+    //   return porduct;
+    // } else {
+    //   console.log('No existe el producto');
+    // }
+    return this.productModel.findById({id})
   }
 
-  createProduct(datos: Product): any {
+  createProduct(product: ProductDTO): Promise<Product> {
     try {
-      this.products.push(datos);
-      return datos;
+      const createdProduct = new this.productModel(product)
+      return createdProduct.save()
     } catch (error) {
       console.log(error);
     }
   }
 
-  updateProduct(id: number, data): any {
+/* 
+  updateProduct(id: string, data): any {
     let newProduct: {
-      id: number;
+      id: string;
       name: string;
       price: number;
       stock: number;
     };
     try {
       this.products.map((product) => {
-        if (product.id === +id) {
+        if (product.id === id) {
           product.name = data.name;
           product.price = data.price;
           product.stock = data.stock;
@@ -62,21 +77,21 @@ export class ProductsService {
     }
   }
 
-  deleteProduct(id: number): any {
+  deleteProduct( id: string ): any {
     try {
       const deletedProduct = this.products.filter(
-        (product) => product.id === +id
+        (product) => product.id === id
       );
       // console.log(...deletedProduct)
 
-      const newArray = this.products.filter((product) => product.id !== +id);
+      const newArray = this.products.filter((product) => product.id !== id);
       this.products = newArray;
       return deletedProduct[0];
     } catch (error) {
       throw new Error(`Error al eliminar el producto ${error}`);
     }
   }
-
+*/
   // sendData(datos): any {
   //   return datos;
   // }

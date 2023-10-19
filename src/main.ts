@@ -1,6 +1,6 @@
 import * as morgan from 'morgan';
 
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { CORS } from './constants';
@@ -10,7 +10,10 @@ async function bootstrap() {
 
   app.use(morgan('dev'));
 
-  const configService = app.get(ConfigService);
+  ConfigModule.forRoot({
+    envFilePath: `.${process.env.NODE_ENV.trim()}.env`,
+  });
+  const configService = new ConfigService();
 
   app.enableCors(CORS);
 

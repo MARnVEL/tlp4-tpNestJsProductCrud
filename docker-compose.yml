@@ -1,15 +1,28 @@
 version: '3.1'
 
 services:
-  marnvel_pg:
-    image: postgres:15.4
-    container_name: marnvel_pg
+  # marnvel_pg:
+  #   image: postgres:15.4
+  #   container_name: marnvel_pg
+  #   restart: always
+  #   environment:
+  #     POSTGRES_DB: marnveldb
+  #     POSTGRES_USER: marnvel
+  #     POSTGRES_PASSWORD: pass
+  #   volumes:
+  #     - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  #   ports:
+  #     - 5433:5432
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
     restart: always
     environment:
-      POSTGRES_DB: marnveldb
-      POSTGRES_USER: marnvel
-      POSTGRES_PASSWORD: pass
-    volumes:
-      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      MONGODB_DATABASE: nest
+      # MONGO_INITDB_ROOT_USERNAME: marnvel
+      # MONGO_INITDB_ROOT_PASSWORD: pass
     ports:
-      - 5433:5432
+      - 27017:27017
+    # volumes:
+    #   - ./mongodb-data:/data/db
