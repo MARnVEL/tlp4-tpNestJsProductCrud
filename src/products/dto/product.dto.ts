@@ -13,6 +13,10 @@ export class ProductDTO {
     @IsNotEmpty()
     @IsNumber()
     stock: number
+
+    @IsNotEmpty()
+    @IsString()
+    category: string
 }
 
 export class ProductUpdateDTO {
@@ -28,5 +32,9 @@ export class ProductUpdateDTO {
     @IsOptional()
     @IsNumber()
     stock: number
+
+    @IsOptional()
+    @IsString()
+    category: string
 
 }

@@ -1,11 +1,13 @@
 import { v4 as uuid } from 'uuid'
 import { Model, ModifyResult } from 'mongoose';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Delete } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { ProductDTO, ProductUpdateDTO } from '../dto/product.dto';
-import { Product } from './../schemas/products.schema';
+import { Product, ProductDocument } from './../schemas/products.schema';
+import { NotFoundError } from 'rxjs';
+import { ErrorManager } from 'src/common/utils/error.manager';
 
 // import { Product } from '../models/product.model';
 
@@ -22,12 +24,45 @@ export class ProductsService {
     return 'Hola';
   }
 
-  getProducts(): Promise<Product[]> {
-    return this.productModel.find().exec()
+  async getProducts(): Promise<Product[]> {
+    try {
+      const products: Product[] = await this.productModel
+        .find().
+        populate('category', {
+          __v: 0,
+          createdAt: 0
+        })
+        .exec();
+
+      if (products.length === 0) {
+        throw new ErrorManager({
+          type:'BAD_REQUEST',
+          message: 'No se encontró resultado'
+        })
+      }
+
+      return products;
+    } catch (error) {
+      throw ErrorManager.createSignatureError(error.message)
+    }
   }
 
-  async getProduct(id: string): Promise<Product> {
-    return this.productModel.findById(id)
+  async getProduct(id: string): Promise<ProductDocument> {
+
+    try {
+      const product = await this.productModel.findById(id).populate('category', {__v: 0})
+      if (!product) {
+        throw new ErrorManager({
+          type:'BAD_REQUEST',
+          message: 'No se encontró resultado'
+        })
+      }
+      return product
+    } catch (error) {
+      console.log(error);
+      
+    }
+    
   }
 
   createProduct(product: ProductDTO): Promise<Product> {
@@ -43,23 +78,16 @@ export class ProductsService {
     return await this.productModel.findByIdAndUpdate(id, infoUpdate, { new: true })
   }
 
-/*
-  deleteProduct( id: string ): any {
-    try {
-      const deletedProduct = this.products.filter(
-        (product) => product.id === id
-      );
-      // console.log(...deletedProduct)
 
-      const newArray = this.products.filter((product) => product.id !== id);
-      this.products = newArray;
-      return deletedProduct[0];
+  async deleteProduct( id: string ) {
+    console.log('El id dentro del service deleteProdut: ', id);
+    
+    try {
+      console.log('Dentro del try');
+      await this.productModel.findByIdAndDelete(id)
     } catch (error) {
       throw new Error(`Error al eliminar el producto ${error}`);
     }
   }
-*/
-  // sendData(datos): any {
-  //   return datos;
-  // }
+
 }

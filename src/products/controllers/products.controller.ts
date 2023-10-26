@@ -48,15 +48,9 @@ export class ProductsController {
     this.productsService.updateProduct(id, infoUpdate)
     // return this.productsService.updateProduct(id, data);
   }
-  
-  /* 
+
   @Delete('/:id')
-  deleteProduct(@Param('id') id: string): any {
+  deleteProduct(@Param('id', MongoIdPipe) id: string): any {
     return this.productsService.deleteProduct(id);
   }
- */
-  // @Post()
-  // sendData(@Body() datos): any {
-  //   return datos;
-  // }
 }

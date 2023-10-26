@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Category } from './entities/category.entity';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class CategoriesService {
+
+  constructor(
+    @InjectModel(Category.name) private categoryModel: Model<Category>
+  ) {}
+
+
   create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+    return this.categoryModel.create(createCategoryDto)
   }
 
-  findAll() {
-    return `This action returns all categories`;
+  // TODO: ¿Qué usamos acá el DTO o la clase Category de los schemas??
+  async findAll(): Promise<CreateCategoryDto[]> {
+    const categories: Category[] = await this.categoryModel.find().exec()
+
+    // if((await categories).length) throw new NotFoundException('Category not found')
+    if(categories.length === 0)
+      throw new NotFoundException('There is no categories')
+
+    return categories
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: string) {
+    const findedCategory = await this.categoryModel.findById(id)
+
+    if(!findedCategory) throw new NotFoundException('Category not found')
+
+    return findedCategory
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+    await this.findOne(id)
+
+    return this.categoryModel.findByIdAndUpdate(id, updateCategoryDto, {new: true})
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  remove(id: string) {
+    return this.categoryModel.findByIdAndDelete(id)
   }
 }
