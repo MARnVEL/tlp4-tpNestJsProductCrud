@@ -1,3 +1,4 @@
+import { ProductDTO, ProductUpdateDTO } from './../dto/product.dto';
 import {
   Body,
   Controller,
@@ -5,10 +6,12 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put
 } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
+import { MongoIdPipe } from 'src/common/pipes/mongo-id.pipe';
 
 @Controller('products')
 export class ProductsController {
@@ -28,22 +31,25 @@ export class ProductsController {
     return this.productsService.getProducts();
   }
 
-  @Get('/:id')
-  getProduct(@Param('id') id: string): any {
+  @Get(':id')
+  getProduct(@Param('id', MongoIdPipe) _id: string): any {
     // const parsedId = Number(id);
-    return this.productsService.getProduct(id);
+    return this.productsService.getProduct(_id);
   }
 
   @Post()
-  createProduct(@Body() datos): any {
-    return this.productsService.createProduct(datos);
-  }
-/* 
-  @Put('/:id')
-  updateProduct(@Param('id') id: string, @Body() data): any {
-    return this.productsService.updateProduct(id, data);
+  createProduct(@Body() prodcut: ProductDTO): any {
+    return this.productsService.createProduct(prodcut);
   }
 
+  // TODO: Ver cómo hacer para que el actualizar me retorne el nuevo documento
+  @Patch(':id')
+  updateProduct(@Param('id', MongoIdPipe) id: string, @Body() infoUpdate: ProductUpdateDTO ) {
+    this.productsService.updateProduct(id, infoUpdate)
+    // return this.productsService.updateProduct(id, data);
+  }
+  
+  /* 
   @Delete('/:id')
   deleteProduct(@Param('id') id: string): any {
     return this.productsService.deleteProduct(id);

@@ -12,6 +12,7 @@ async function bootstrap() {
 
   ConfigModule.forRoot({
     envFilePath: `.${process.env.NODE_ENV.trim()}.env`,
+    isGlobal: true
   });
   const configService = new ConfigService();
 

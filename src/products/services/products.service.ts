@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid'
-import { Model } from 'mongoose';
+import { Model, ModifyResult } from 'mongoose';
 
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { ProductDTO } from '../dto/product.dto';
+import { ProductDTO, ProductUpdateDTO } from '../dto/product.dto';
 import { Product } from './../schemas/products.schema';
 
 // import { Product } from '../models/product.model';
@@ -13,13 +13,6 @@ import { Product } from './../schemas/products.schema';
 export class ProductsService {
 
   constructor(@InjectModel(Product.name) private productModel: Model<Product>) {}
-
-  /*
-  private products: Product[] = [
-    { id: uuid(), name: 'P1', price: 12, stock: 5 },
-    { id: uuid(), name: 'P1', price: 12, stock: 5 }
-  ];
-  */
 
   getHello(): string {
     return 'Hello World!';
@@ -34,13 +27,7 @@ export class ProductsService {
   }
 
   async getProduct(id: string): Promise<Product> {
-    // const porduct = this.products.find((product) => product.id === id);
-    // if (porduct) {
-    //   return porduct;
-    // } else {
-    //   console.log('No existe el producto');
-    // }
-    return this.productModel.findById({id})
+    return this.productModel.findById(id)
   }
 
   createProduct(product: ProductDTO): Promise<Product> {
@@ -52,31 +39,11 @@ export class ProductsService {
     }
   }
 
-/* 
-  updateProduct(id: string, data): any {
-    let newProduct: {
-      id: string;
-      name: string;
-      price: number;
-      stock: number;
-    };
-    try {
-      this.products.map((product) => {
-        if (product.id === id) {
-          product.name = data.name;
-          product.price = data.price;
-          product.stock = data.stock;
-          newProduct = product;
-          // return product;
-        }
-        // return newProduct;
-      });
-      return newProduct;
-    } catch (error) {
-      throw new Error(`Error al editar el producto ${error}`);
-    }
+  async updateProduct(id: string, infoUpdate: ProductUpdateDTO) {
+    return await this.productModel.findByIdAndUpdate(id, infoUpdate, { new: true })
   }
 
+/*
   deleteProduct( id: string ): any {
     try {
       const deletedProduct = this.products.filter(
